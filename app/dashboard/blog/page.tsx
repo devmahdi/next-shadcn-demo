@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import {
-  Code2, LogOut, ArrowLeft, Plus, Pencil, Trash2, Eye, EyeOff, Save, X, ImagePlus,
+  Code2, LogOut, ArrowLeft, Plus, Pencil, Trash2, Eye, EyeOff, Save, X, ImagePlus, Sparkles,
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ImageUpload } from "@/components/image-upload";
@@ -43,6 +43,7 @@ export default function AdminBlogPage() {
   const [form, setForm] = useState({ title: "", slug: "", excerpt: "", content: "", cover_image: "", published: false });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [generating, setGenerating] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -148,6 +149,27 @@ export default function AdminBlogPage() {
     loadPosts();
   }
 
+  async function handleGenerateContent() {
+    setGenerating(true);
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch("/api/generate-content", {
+        method: "POST",
+        headers: { authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert(`✨ ${data.message}\n\nTopics:\n${data.topics.map((t: string) => `• ${t}`).join("\n")}\n\nCheck the post list below!`);
+        loadPosts();
+      } else {
+        alert(`Failed: ${data.error}`);
+      }
+    } catch {
+      alert("Network error");
+    }
+    setGenerating(false);
+  }
+
   function handleLogout() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -196,9 +218,15 @@ export default function AdminBlogPage() {
             <h1 className="text-2xl font-bold">Blog Management</h1>
           </div>
           {!showForm && (
-            <Button onClick={startCreate} className="gap-2">
-              <Plus className="h-4 w-4" /> New Post
-            </Button>
+            <div className="flex gap-2">
+              <Button onClick={handleGenerateContent} variant="outline" disabled={generating} className="gap-2">
+                <Sparkles className="h-4 w-4" />
+                {generating ? "Generating..." : "Generate Content"}
+              </Button>
+              <Button onClick={startCreate} className="gap-2">
+                <Plus className="h-4 w-4" /> New Post
+              </Button>
+            </div>
           )}
         </div>
 
