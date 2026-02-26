@@ -87,7 +87,7 @@ export function verifyToken(token: string): { userId: number; email: string; rol
     const payload = JSON.parse(Buffer.from(encoded, "base64url").toString());
     if (payload.exp < Date.now()) return null;
 
-    return { userId: payload.userId, email: payload.email };
+    return { userId: payload.userId, email: payload.email, role: payload.role || "user" };
   } catch {
     return null;
   }
