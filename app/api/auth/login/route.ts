@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { findUserByEmail, verifyPassword, createToken } from "@/lib/db";
+import { findUserByEmail, verifyPassword, createToken, seedAdmin } from "@/lib/db";
+
+// Ensure admin user exists
+seedAdmin();
 
 export async function POST(request: NextRequest) {
   try {

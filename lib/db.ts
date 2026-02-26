@@ -52,6 +52,13 @@ export function getDb(): Database.Database {
       CREATE INDEX IF NOT EXISTS idx_posts_slug ON posts(slug);
       CREATE INDEX IF NOT EXISTS idx_posts_published ON posts(published);
     `);
+
+    // Migration: add role column if missing (for existing DBs)
+    try {
+      db.exec("ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'user'");
+    } catch {
+      // Column already exists, ignore
+    }
   }
   return db;
 }
