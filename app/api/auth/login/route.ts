@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { findUserByEmail, verifyPassword, createToken, seedAdmin } from "@/lib/db";
 
-// Ensure admin user exists
-seedAdmin();
-
 export async function POST(request: NextRequest) {
   try {
+    // Seed admin on first request (lazy init)
+    seedAdmin();
+
     const { email, password } = await request.json();
 
     if (!email || !password) {

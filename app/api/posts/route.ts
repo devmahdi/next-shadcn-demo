@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getPublishedPosts, getAllPosts, createPost, verifyToken, seedAdmin } from "@/lib/db";
 
-// Seed admin on first API call
-seedAdmin();
-
 export async function GET(request: NextRequest) {
+  seedAdmin();
   const admin = request.headers.get("x-admin") === "true";
   const token = request.headers.get("authorization")?.replace("Bearer ", "");
 
