@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create token
-    const token = createToken(user.id, user.email);
+    const token = createToken(user.id, user.email, user.role || "user");
 
     return NextResponse.json({
       token,
@@ -39,6 +39,7 @@ export async function POST(request: NextRequest) {
         id: user.id,
         name: user.name,
         email: user.email,
+        role: user.role || "user",
       },
     });
   } catch (error) {

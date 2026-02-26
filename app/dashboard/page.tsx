@@ -12,12 +12,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Code2, LogOut, Home, Activity, Users, FolderOpen } from "lucide-react";
+import { Code2, LogOut, Home, Activity, Users, FolderOpen, FileText } from "lucide-react";
 
 interface User {
   id: number;
   name: string;
   email: string;
+  role?: string;
 }
 
 export default function DashboardPage() {
@@ -124,6 +125,14 @@ export default function DashboardPage() {
             <Button variant="outline" size="sm">Create Project</Button>
             <Button variant="outline" size="sm">Invite Member</Button>
             <Button variant="outline" size="sm">View Analytics</Button>
+            {user.role === "admin" && (
+              <Link href="/dashboard/blog">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <FileText className="h-3.5 w-3.5" />
+                  Manage Blog
+                </Button>
+              </Link>
+            )}
             <Link href="/">
               <Button variant="outline" size="sm" className="gap-2">
                 <Home className="h-3.5 w-3.5" />
