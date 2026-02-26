@@ -28,7 +28,6 @@ export async function uploadFile(
       Key: key,
       Body: buffer,
       ContentType: contentType,
-      ACL: "public-read",
     })
   );
 

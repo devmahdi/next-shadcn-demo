@@ -34,8 +34,9 @@ export async function POST(request: NextRequest) {
     const url = await uploadFile(buffer, file.name, file.type);
 
     return NextResponse.json({ url }, { status: 201 });
-  } catch (error) {
-    console.error("Upload error:", error);
-    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("Upload error:", msg, error);
+    return NextResponse.json({ error: `Upload failed: ${msg}` }, { status: 500 });
   }
 }
