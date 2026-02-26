@@ -32,5 +32,10 @@ export async function uploadFile(
     })
   );
 
+  // If S3_PUBLIC_URL is set, it already includes the bucket path (e.g. via nginx proxy)
+  // Only add bucket name when using raw S3 endpoint
+  if (process.env.S3_PUBLIC_URL) {
+    return `${PUBLIC_URL}/${key}`;
+  }
   return `${PUBLIC_URL}/${BUCKET}/${key}`;
 }
