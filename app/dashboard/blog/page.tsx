@@ -9,9 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import {
-  Code2, LogOut, ArrowLeft, Plus, Pencil, Trash2, Eye, EyeOff, Save, X,
+  Code2, LogOut, ArrowLeft, Plus, Pencil, Trash2, Eye, EyeOff, Save, X, ImagePlus,
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ImageUpload } from "@/components/image-upload";
 
 interface User {
   id: number;
@@ -245,20 +246,44 @@ export default function AdminBlogPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label>Cover Image URL (optional)</Label>
-                <Input
-                  value={form.cover_image}
-                  onChange={(e) => setForm((f) => ({ ...f, cover_image: e.target.value }))}
-                  placeholder="https://example.com/image.jpg"
-                />
+                <Label>Cover Image</Label>
+                <div className="flex items-center gap-3">
+                  <ImageUpload
+                    label="Upload Cover"
+                    currentUrl={form.cover_image || undefined}
+                    onUpload={(url) => setForm((f) => ({ ...f, cover_image: url }))}
+                  />
+                  <span className="text-xs text-muted-foreground">or</span>
+                  <Input
+                    value={form.cover_image}
+                    onChange={(e) => setForm((f) => ({ ...f, cover_image: e.target.value }))}
+                    placeholder="Paste URL..."
+                    className="flex-1"
+                  />
+                </div>
+                {form.cover_image && (
+                  <div className="rounded-md overflow-hidden border w-full max-w-xs h-32 mt-2">
+                    <img src={form.cover_image} alt="Cover preview" className="w-full h-full object-cover" />
+                  </div>
+                )}
               </div>
               <div className="space-y-2">
-                <Label>Content</Label>
+                <div className="flex items-center justify-between">
+                  <Label>Content</Label>
+                  <ImageUpload
+                    label="Insert Image"
+                    compact
+                    onUpload={(url) => {
+                      const imgTag = `\n<img src="${url}" alt="image" style="max-width:100%;border-radius:8px;margin:16px 0" />\n`;
+                      setForm((f) => ({ ...f, content: f.content + imgTag }));
+                    }}
+                  />
+                </div>
                 <textarea
                   className="flex min-h-[200px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   value={form.content}
                   onChange={(e) => setForm((f) => ({ ...f, content: e.target.value }))}
-                  placeholder="Write your blog post content here..."
+                  placeholder="Write your blog post content here. Use 'Insert Image' to add images inline..."
                 />
               </div>
               <div className="flex items-center gap-2">
