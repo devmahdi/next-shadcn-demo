@@ -39,6 +39,15 @@ jobs:
             docker load < next-app.tar.gz
             docker stop next-app || true
             docker rm next-app || true
-            docker run -d --name next-app --restart unless-stopped --network oros-deployment_oros -p 3001:3000 next-app:latest
+            docker run -d \
+              --name next-app \
+              --restart unless-stopped \
+              --network oros-deployment_oros \
+              -p 3001:3000 \
+              -v /opt/deployments/oros-deployment/next-app-data:/app/data \
+              -e AUTH_SECRET="$(cat /opt/deployments/oros-deployment/.auth-secret)" \
+              -e DATABASE_PATH="/app/data/app.db" \
+              -e NODE_ENV=production \
+              next-app:latest
             rm next-app.tar.gz
             echo "Deployment completed successfully!"
